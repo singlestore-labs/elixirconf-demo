@@ -41,7 +41,7 @@ def main():
                     id BIGINT PRIMARY KEY AUTO_INCREMENT,
                     product_id BIGINT NOT NULL,
                     stock BIGINT NOT NULL DEFAULT 0,
-                    supply_delivery_days INTEGER NOT NULL DEFAULT 0,
+                    supply_delivery_days BIGINT NOT NULL DEFAULT 0,
                     reorder_threshold BIGINT NOT NULL DEFAULT 0
                 )
             """)

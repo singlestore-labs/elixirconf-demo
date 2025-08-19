@@ -9,5 +9,6 @@ db = connect(
     password=getenv("DB_PASSWORD"),
     host=getenv("DB_HOST"),
     port=getenv("DB_PORT"),
-    database=getenv("DB_NAME")
+    database=getenv("DB_NAME"),
+    local_infile=True
 )

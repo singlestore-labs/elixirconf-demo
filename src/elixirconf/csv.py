@@ -2,6 +2,7 @@ import csv
 from pathlib import Path
 from contextlib import contextmanager
 from typing import Sequence, Optional, Any, Callable, Generator
+from elixirconf.db import db
 
 
 @contextmanager
@@ -35,3 +36,15 @@ def csv_writer(
     finally:
         flush()
         file.close()
+
+
+def load_csv(path: Path | str, table_name: str):
+    with db.cursor() as cursor:
+        cursor.execute(f"""
+            LOAD DATA LOCAL INFILE %s
+            INTO TABLE {table_name}
+            LINES TERMINATED BY '\r\n'
+            FIELDS TERMINATED BY ','
+            ENCLOSED BY '"'
+            IGNORE 1 LINES
+        """, (path))

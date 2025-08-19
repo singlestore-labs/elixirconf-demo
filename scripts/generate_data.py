@@ -1,4 +1,5 @@
 import random
+import json
 
 from elixirconf.constants import ORDERS_COUNT, PRODUCT_CATEGORIES, PRODUCTS
 from elixirconf.csv import csv_writer
@@ -34,7 +35,7 @@ def generate_product_embeddings():
                 embedding.index + 1,
                 PRODUCTS[embedding.index]["id"],
                 descriptions[embedding.index],
-                str(embedding.embedding)
+                json.dumps(embedding.embedding)
             ))
 
 
