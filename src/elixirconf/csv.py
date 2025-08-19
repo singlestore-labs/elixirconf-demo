@@ -1,34 +1,37 @@
 import csv
 from pathlib import Path
+from contextlib import contextmanager
+from typing import Sequence, Optional, Any, Callable, Generator
 
 
-def write_csv(rows, path, headers=None):
+@contextmanager
+def csv_writer(
+    path: Path | str,
+    headers: Optional[Sequence[str]] = None,
+    batch_size: int = 10_000,
+) -> Generator[Callable[[Sequence[Any]], None], None, None]:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
+    file = path.open("w", encoding="utf-8", newline="")
+    writer = csv.writer(file)
 
-    with path.open("w", encoding="utf-8", newline="") as file:
-        writer = csv.writer(file)
+    if headers is not None:
+        writer.writerow(headers)
 
-        if headers:
-            writer.writerow(list(headers))
+    buffer: list[Sequence[Any]] = []
 
-        for row in rows:
-            writer.writerow(list(row))
+    def flush() -> None:
+        if buffer:
+            writer.writerows(buffer)
+            buffer.clear()
 
-    return path
+    def write(row: Sequence[Any]) -> None:
+        buffer.append(row)
+        if len(buffer) >= batch_size:
+            flush()
 
-
-def read_csv(path, headers=True):
-    path = Path(path)
-    rows = []
-
-    with path.open("r", encoding="utf-8", newline="") as file:
-        reader = csv.reader(file)
-
-        if headers:
-            next(reader, None)
-
-        for row in reader:
-            rows.append(tuple(row))
-
-    return rows
+    try:
+        yield write
+    finally:
+        flush()
+        file.close()
