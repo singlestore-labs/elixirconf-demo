@@ -19,7 +19,8 @@ def main():
                     name VARCHAR(512) NOT NULL,
                     description TEXT,
                     price DECIMAL(10, 2),
-                    PRIMARY KEY (id)
+                    SHARD KEY (category_id),
+                    PRIMARY KEY (id, category_id)
                 )
             """)
 
@@ -29,7 +30,8 @@ def main():
                     product_id BIGINT NOT NULL,
                     content TEXT NOT NULL,
                     embedding VECTOR(1536) NOT NULL,
-                    PRIMARY KEY (id)
+                    SHARD KEY (product_id),
+                    PRIMARY KEY (id, product_id)
                 )
             """)
 
@@ -40,7 +42,8 @@ def main():
                     stock BIGINT NOT NULL DEFAULT 0,
                     supply_delivery_days BIGINT NOT NULL DEFAULT 0,
                     reorder_threshold BIGINT NOT NULL DEFAULT 0,
-                    PRIMARY KEY (id)
+                    SHARD KEY (product_id),
+                    PRIMARY KEY (id, product_id)
                 )
             """)
 
@@ -58,7 +61,7 @@ def main():
                     product_id BIGINT NOT NULL,
                     quantity INT NOT NULL,
                     SHARD KEY (order_id),
-                    SORT KEY (order_id)
+                    PRIMARY KEY (order_id, product_id)
                 )
             """)
     finally:
