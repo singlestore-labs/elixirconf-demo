@@ -58,7 +58,6 @@ def generate_orders():
     with csv_writer("data/orders.csv", headers=("id", "created_at")) as write_orders:
         with csv_writer("data/order_products.csv", headers=("id", "order_id", "product_id")) as write_order_products:
             order_id = 0
-            order_product_id = 0
 
             for _ in range(ORDERS_COUNT):
                 order_id += 1
@@ -66,11 +65,11 @@ def generate_orders():
                 write_orders((order_id, created_at))
 
                 for product_id in random.sample(product_ids, random.randint(1, 5)):
-                    order_product_id += 1
+                    quantity = random.randint(1, 10)
                     write_order_products((
-                        order_product_id,
                         order_id,
-                        product_id
+                        product_id,
+                        quantity
                     ))
 
 

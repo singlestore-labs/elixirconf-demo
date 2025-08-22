@@ -54,10 +54,11 @@ def main():
 
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS order_products (
-                    id BIGINT AUTO_INCREMENT,
                     order_id BIGINT NOT NULL,
                     product_id BIGINT NOT NULL,
-                    PRIMARY KEY (id)
+                    quantity INT NOT NULL,
+                    SHARD KEY (order_id),
+                    SORT KEY (order_id)
                 )
             """)
     finally:
